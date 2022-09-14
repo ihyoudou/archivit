@@ -23,6 +23,10 @@ class Post extends Model
     ];
 
     public function author(){
-        return $this->belongsTo('App\Author');
+        return $this->belongsTo('App\Models\Author');
+    }
+
+    public function source(){
+        return $this->belongsTo('App\Models\ArchiveList');
     }
 }

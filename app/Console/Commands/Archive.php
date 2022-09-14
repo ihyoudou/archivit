@@ -66,7 +66,7 @@ class Archive extends Command
                     "updated_at" => Carbon::now()
                 ];
                 # Updating existing posts that are still on the list
-                Post::where("reddit_id", '=', $data->id)->update(
+                $votes_update = Post::where("reddit_id", '=', $data->id)->update(
                    [
                        "upvotes" => $data->ups,
                        "downvotes"=> $data->downs,
@@ -74,6 +74,7 @@ class Archive extends Command
                        "updated_at" => Carbon::now(),
                    ]
                 );
+                print($votes_update . PHP_EOL);
             }
             # Mass insert
             $insert = Post::insertOrIgnore($posts);
