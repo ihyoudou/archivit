@@ -18,8 +18,19 @@ return new class extends Migration
             $table->string('reddit_id')->unique()->nullable(false);
             $table->string('title')->default(null)->nullable(false);
             $table->longText('selftext')->nullable(true);
+
             $table->unsignedBigInteger('author_id')->unsigned();
-            $table->foreign('author_id')->references('id')->on('authors')->oncascade('delete');
+            $table->foreign('author_id')
+                ->references('id')
+                ->on('authors')
+                ->onDelete('cascade');
+
+            $table->unsignedBigInteger('source_id')->unsigned();
+            $table->foreign('source_id')
+                ->references('id')
+                ->on('archive_lists')
+                ->onDelete('cascade');
+
             $table->string('permalink')->nullable(false);
             $table->enum('media', ['image', 'video'])->nullable(true);
             $table->integer('upvotes')->default(0);

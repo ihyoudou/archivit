@@ -23,7 +23,7 @@ class Archive extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Archive subreddits and users from database';
 
     /**
      * Execute the console command.
@@ -57,6 +57,7 @@ class Archive extends Command
                     "title" => $data->title ?? $data->link_title,
                     "selftext" => $data->selftext ?? $data->body_html,
                     "author_id" => $author->id,
+                    "source_id" => $archive->id,
                     "permalink" => $data->permalink,
                     "upvotes" => $data->ups,
                     "downvotes" => $data->downs,
