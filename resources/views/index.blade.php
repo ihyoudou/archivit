@@ -14,14 +14,31 @@
                     </p>
                     <a style="margin-left:5px" href="https://old.reddit.com{{$post->permalink }}" target="_blank">{{ $post->created_at }}</a>
                 </div>
-                <h1>{{ $post->title }}</h1>
+                <span><i class="bi bi-caret-up"></i>{{ $post->upvotes }}</span>
+                <a href="{{$post->url}}" class="title"><h1>{{ $post->title }}</h1></a>
                 <x-markdown>
                     {{ $post->selftext }}
                 </x-markdown>
+                <p>URL: <a href="{{$post->url}}" target="_blank">{{$post->url}}</a></p>
+                @foreach($post->media_archive as $media)
+                    @if($media->type == "image")
+                        <img src="{{ env('APP_MEDIA_URL') }}/{{$media->uri}}" class="img-fluid" style="max-height:400px">
+                    @elseif($media->type == "video")
+                        <video
+                            style="width:100%"
+                            controls
+                            src="{{ env('APP_MEDIA_URL') }}/{{$media->uri}}">
+                        </video>
+                    @endif
+                @endforeach
                 <div class="row">
                     <div class="col">
-                        <span><i class="bi bi-arrow-up-circle"></i>{{ $post->upvotes }}</span>
-                        <span><i class="bi bi-arrow-down-circle"></i>{{ $post->downvotes }}</span>
+                        <a href="/r/{{ $post->source->name }}/comments/{{ $post->reddit_id }}">
+                            <span>
+                                <i class="bi bi-chat-right-fill"></i>
+                                Comments
+                            </span>
+                        </a>
 
                     </div>
                     <div class="col d-flex justify-content-end">

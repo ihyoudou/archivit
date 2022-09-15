@@ -5,15 +5,13 @@ Application to archive subreddits from Reddit with web interface written using L
 
 ## Goal
 
-* Archive subreddits with media
-* Archive comments on posts
-* Archive user profiles
-* Support local and remote media store (e.g. S3 object storage)
-* Usable web interface and admin interface
-
-## What is working?
-
-* Archiving last 100 posts on subreddits
+- [x] Archive subreddits   
+- [ ] Archive posts with images (partial)  
+- [ ] Archive posts with video  (partial)
+- [ ] Archive comments on posts  
+- [ ] Archive user profiles  
+- [ ] Support local and remote media store (e.g. S3 object storage)  
+- [ ] Usable web interface and admin interface
 
 ## Requirements
 
@@ -24,6 +22,12 @@ Application to archive subreddits from Reddit with web interface written using L
 
 ## How to install
 WIP
+```
+cp .env.example .env
+php artisan key:generate
+php artisan storage:link
+```
+Change database credentials in `.env` and set `APP_NAME`, `APP_URL`, `APP_MEDIA_URL`
 
 ### How to setup cronjob
 WIP

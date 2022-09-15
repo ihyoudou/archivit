@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('media', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('post_id')->unsigned();
-            $table->foreign('post_id')
+            $table->unsignedBigInteger('reddit_post_id')->unsigned();
+            $table->foreign('reddit_post_id')
                 ->references('id')
                 ->on('posts')
                 ->onDelete('cascade');

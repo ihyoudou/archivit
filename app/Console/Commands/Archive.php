@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Jobs\DownloadRedditVideo;
 use App\Models\ArchiveList;
 use App\Models\Author;
 use App\Models\Post;
@@ -44,7 +45,7 @@ class Archive extends Command
 
         $this->to_archive = ArchiveList::where('type', 'subreddit')->get();
         $this->totalItemsToArchiveCount = count($this->to_archive);
-        
+
         $client = new Client();
 
         $requests = function($total) use ($client) {
@@ -71,17 +72,34 @@ class Archive extends Command
                     $author = Author::firstOrCreate([
                         'name' => $data->author
                     ]);
-    
+
+                    if(isset($data->post_hint)){
+                        switch($data->post_hint){
+                            case "image":
+                                $media_type = "image";
+                                DownloadImage::dispatch($data->id, $data->url_overridden_by_dest);
+                                break;
+                            case "hosted:video":
+                                $media_type = "video";
+                                DownloadRedditVideo::dispatch($data->id, $data->secure_media->reddit_video->fallback_url);
+                                break;
+                        }
+                    }
+
                     $posts[] = [
                         "reddit_id" => $data->id,
                         "title" => $data->title ?? $data->link_title,
                         "selftext" => $data->selftext ?? $data->body_html,
+                        "url" => $data->url ?? null,
                         "author_id" => $author->id,
                         "source_id" => $this->to_archive[$index]->id,
+                        "media_type" => $media_type ?? null,
                         "permalink" => $data->permalink,
                         "upvotes" => $data->ups,
                         "downvotes" => $data->downs,
+                        "score" => $data->score,
                         "locked" => $data->locked,
+                        "over_18" => $data->over_18,
                         "created_at" => Carbon::createFromTimestamp($data->created),
                         "updated_at" => Carbon::now()
                     ];
@@ -95,9 +113,7 @@ class Archive extends Command
                         ]
                     );
 
-                    if(isset($data->post_hint) && $data->post_hint === "image"){
-                        DownloadImage::dispatch($data->id, $data->url_overridden_by_dest);
-                    }
+
                 }
                 // Mass insert
                 $insert = Post::insertOrIgnore($posts);

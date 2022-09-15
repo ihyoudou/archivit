@@ -10,13 +10,13 @@ class Media extends Model
     use HasFactory;
 
     protected $fillable = [
-        'post_id',
+        'reddit_post_id',
         'uri',
         'original_source',
     ];
 
-    public function post()
+    public function from_post()
     {
-        return $this->belongsTo(Post::class, 'id', 'post_id');
+        return $this->belongsTo(Post::class);
     }
 }

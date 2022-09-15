@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Models\Media;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -10,12 +11,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-
-class DownloadImage implements ShouldQueue
+class DownloadRedditVideo implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -44,22 +43,23 @@ class DownloadImage implements ShouldQueue
         // if media is not yet downloaded
         if($check_if_exist == 0){
             $uuid = Str::uuid();
+            $file_extension = pathinfo(basename($this->url), PATHINFO_EXTENSION);
             $path = sprintf("%s/%s/%s.%s",
                 Carbon::now()->format('Y-m'),
                 $this->post_id,
                 $uuid,
-                pathinfo(basename($this->url), PATHINFO_EXTENSION));
+                str_replace("?source=fallback", '', $file_extension));
 
             // downloading image
-            $image = file_get_contents($this->url);
-            Storage::put($path, $image);
+            $video = file_get_contents($this->url);
+            Storage::put($path, $video);
 
             $post = Post::where('reddit_id', '=', $this->post_id)->first();
             Media::insert([
                 "reddit_post_id" => $post->id,
                 "uri" => $path,
                 "original_source" => $this->url,
-                "type" => "image",
+                "type" => "video",
             ]);
         }
 

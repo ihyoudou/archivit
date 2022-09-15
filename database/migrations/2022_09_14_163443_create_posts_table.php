@@ -31,11 +31,16 @@ return new class extends Migration
                 ->on('archive_lists')
                 ->onDelete('cascade');
 
+            $table->longText('url')->nullable(true);
             $table->string('permalink')->nullable(false);
-            $table->enum('media', ['image', 'video'])->nullable(true);
+            $table->enum('media_type', ['image', 'video'])->nullable(true);
+
             $table->integer('upvotes')->default(0);
             $table->integer('downvotes')->default(0);
+            $table->float('score')->default(1.0);
+            $table->boolean('over_18');
             $table->boolean('locked')->default(false);
+
             $table->timestamps();
         });
     }

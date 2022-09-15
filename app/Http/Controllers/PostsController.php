@@ -26,14 +26,15 @@ class PostsController extends Controller
     public function getPost($subreddit = null, $rid = null){
 //        $posts = DB::Table('posts')->join('media', 'posts.id', '=', 'media.post_id')->where('posts.reddit_id', '=', $rid)->paginate(15);
 
-        $posts = Post::with('media')->whereHas('source', function($q) use ($subreddit) {
+        $post = Post::whereHas('source', function($q) use ($subreddit) {
             $q->where('name', $subreddit);
         })
+            ->with('media_archive')
             ->where('reddit_id', $rid)
             ->orderBy('id', 'DESC')
-            ->paginate(15);
+            ->first();
 
-        return view('index', compact('posts'));
+        return view('post', compact('post'));
     }
 
     public function search(Request $request){
