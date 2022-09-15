@@ -19,5 +19,7 @@ Route::get('/', [PostsController::class, 'getData']);
 Route::get('/r/{subreddit}', [PostsController::class, 'getSubreddit']);
 Route::get('/r/{subreddit}/comments/{rid}', [PostsController::class, 'getPost']);
 
+Route::get('/search', [PostsController::class, 'search']);
+
 // User
 Route::get('/user/{username}', [AuthorController::class, 'getUser']);
