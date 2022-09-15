@@ -16,17 +16,21 @@ class Post extends Model
         'author_id',
         'source_id',
         'permalink',
-        'media',
         'upvotes',
         'downvotes',
         'locked'
     ];
 
     public function author(){
-        return $this->belongsTo('App\Models\Author');
+        return $this->belongsTo(Author::class);
     }
 
     public function source(){
-        return $this->belongsTo('App\Models\ArchiveList');
+        return $this->belongsTo(ArchiveList::class);
+    }
+
+    public function media()
+    {
+        return $this->hasMany(Media::class);
     }
 }
