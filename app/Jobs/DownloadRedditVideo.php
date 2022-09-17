@@ -50,7 +50,7 @@ class DownloadRedditVideo implements ShouldQueue
                 $uuid,
                 str_replace("?source=fallback", '', $file_extension));
 
-            // downloading image
+            // downloading video
             $video = file_get_contents($this->url);
             Storage::put($path, $video);
 

@@ -29,6 +29,10 @@ class Post extends Model
         return $this->belongsTo(ArchiveList::class);
     }
 
+    public function comments(){
+        return $this->hasMany(Comments::class, 'reddit_post_id');
+    }
+
     public function media_archive(){
         return $this->hasMany(Media::class, 'reddit_post_id');
     }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Comments;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,16 +25,15 @@ class PostsController extends Controller
     }
 
     public function getPost($subreddit = null, $rid = null){
-//        $posts = DB::Table('posts')->join('media', 'posts.id', '=', 'media.post_id')->where('posts.reddit_id', '=', $rid)->paginate(15);
-
         $post = Post::whereHas('source', function($q) use ($subreddit) {
             $q->where('name', $subreddit);
         })
+            ->with('comments')
+            ->with('comments.get_author')
             ->with('media_archive')
             ->where('reddit_id', $rid)
             ->orderBy('id', 'DESC')
             ->first();
-
         return view('post', compact('post'));
     }
 
