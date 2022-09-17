@@ -8,10 +8,8 @@ use App\Models\Author;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Http;
 use GuzzleHttp\Client;
 use GuzzleHttp\Pool;
-use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Exception\ClientException;
 use App\Jobs\DownloadImage;
 
@@ -77,13 +75,23 @@ class Archive extends Command
                         switch($data->post_hint){
                             case "image":
                                 $media_type = "image";
-                                DownloadImage::dispatch($data->id, $data->url_overridden_by_dest);
+                                DownloadImage::dispatch($data->id, $data->url);
                                 break;
                             case "hosted:video":
                                 $media_type = "video";
+                                // Downloading video
                                 DownloadRedditVideo::dispatch($data->id, $data->secure_media->reddit_video->fallback_url);
                                 break;
+                            case "link":
+                                if(str_contains($data->post_hint, "imgur.com")){
+                                    DownloadImgur::dispatch($data->id, $data->url);
+                                }
+                                break;
+                            default:
+                                $this->info($data->post_hint . " " . $data->url);
+                                break;
                         }
+
                     }
 
                     $posts[] = [
@@ -112,8 +120,6 @@ class Archive extends Command
                             "updated_at" => Carbon::now(),
                         ]
                     );
-
-
                 }
                 // Mass insert
                 $insert = Post::insertOrIgnore($posts);

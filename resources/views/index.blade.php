@@ -36,7 +36,7 @@
                         <a href="/r/{{ $post->source->name }}/comments/{{ $post->reddit_id }}">
                             <span>
                                 <i class="bi bi-chat-right-fill"></i>
-                                Comments
+                                Comments ({{ count($post->comments) }})
                             </span>
                         </a>
 

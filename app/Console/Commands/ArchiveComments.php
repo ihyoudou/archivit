@@ -39,7 +39,9 @@ class ArchiveComments extends Command
     {
         $this->info("Initializing...");
 
-        $this->to_archive = Post::where('locked', 0)->limit(1)->get();
+        $this->to_archive = Post::where('locked', 0)
+            ->where('created_at', '>=', Carbon::now()->sub('1 month')->toDateTimeString())
+            ->get();
         $this->totalItemsToArchiveCount = count($this->to_archive);
 
         $client = new Client();
@@ -47,7 +49,6 @@ class ArchiveComments extends Command
         $requests = function($total) use ($client) {
             foreach($this->to_archive as $key=>$item){
                 $url = sprintf("https://old.reddit.com%s.json", $item->permalink);
-                var_dump($url);
                 yield function() use ($client, $url){
                     return $client->getAsync($url);
                 };
@@ -94,7 +95,6 @@ class ArchiveComments extends Command
                         if(isset($data->replies->data->children)) {
                             foreach ($data->replies->data->children as $replies) {
                                 if($replies->kind === "t1"){
-                                    var_dump($replies->data->author);
                                     $author = Author::firstOrCreate([
                                         'name' => $replies->data->author
                                     ]);
