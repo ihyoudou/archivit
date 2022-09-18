@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\AuthorController;
 use App\Http\Controllers\PostsController;
+use App\Http\Controllers\AdminController;
+
+use App\Http\Controllers\Auth\LoginController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,3 +26,21 @@ Route::get('/search', [PostsController::class, 'search']);
 
 // User
 Route::get('/user/{username}', [AuthorController::class, 'getUser']);
+
+
+// Admin panel
+Route::prefix('/admin')->group(function(){
+    Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+    Route::post('/login', [LoginController::class, 'login']);
+});
+// Admin panel authenticated
+Route::middleware('auth')->group(function(){
+    Route::prefix('/admin')->group(function(){
+        Route::get('/', [AdminController::class, 'index'])->name('admin.index');
+        Route::get('/list', [AdminController::class, 'list'])->name('admin.subredditlist');
+        Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+    });
+});
+
+
+

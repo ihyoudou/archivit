@@ -32,6 +32,10 @@ Change database credentials in `.env` and set `APP_NAME`, `APP_URL`, `APP_MEDIA_
 ### How to setup cronjob
 WIP
 
+### Create web administrator account
+```
+php artisan archivit:createadmin
+```
 
 ## Setup development environment
 If you have Docker installed, you can utilize Laravel Sail to quickly boot-up development environment
