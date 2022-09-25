@@ -13,8 +13,20 @@
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    {{ __('You are logged in!') }}
+                        <div class="row text-center">
+                            <div class="col">
+                                <h1>{{$archive_list_count}}</h1>
+                                Elements to archive
+                            </div>
+                            <div class="col">
+                                <h1>{{$posts_archived_count}}</h1>
+                                Post archived
+                            </div>
+                            <div class="col">
+                                <h1>{{$comments_archived_count}}</h1>
+                                Comments archived
+                            </div>
+                        </div>
                 </div>
             </div>
         </div>
