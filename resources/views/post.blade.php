@@ -40,7 +40,6 @@
             <h3>Comments ({{ count($post->comments) }})</h3>
 
             @foreach($post->comments as $comment)
-                {{dump($comment->replies)}}
                 <div
                     class="card"
                     {{-- checking if comment is a reply to main post --}}
