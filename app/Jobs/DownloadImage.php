@@ -13,6 +13,7 @@ use Illuminate\Queue\SerializesModels;
 use App\Models\Media;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 
 class DownloadImage implements ShouldQueue
@@ -51,7 +52,7 @@ class DownloadImage implements ShouldQueue
                 pathinfo(basename($this->url), PATHINFO_EXTENSION));
 
             // downloading image
-            $image = file_get_contents($this->url);
+            $image = Image::make(file_get_contents($this->url))->encode('webp', 75);
             Storage::put($path, $image);
 
             $post = Post::where('reddit_id', '=', $this->post_id)->first();

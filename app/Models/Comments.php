@@ -18,4 +18,9 @@ class Comments extends Model
     {
         return $this->belongsTo(Author::class, 'author_id', 'id');
     }
+
+    public function replies()
+    {
+        return $this->hasMany(Comments::class, 'parent_id', 'rid')->with('replies');
+    }
 }

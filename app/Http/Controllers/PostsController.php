@@ -30,6 +30,7 @@ class PostsController extends Controller
         })
             ->with('comments')
             ->with('comments.get_author')
+            ->with('comments.replies')
             ->with('media_archive')
             ->where('reddit_id', $rid)
             ->orderBy('id', 'DESC')
