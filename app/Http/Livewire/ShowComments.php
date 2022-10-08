@@ -15,7 +15,7 @@ class ShowComments extends Component
 
     public function render()
     {
-        $comments = Comments::where('parent_id', $this->post_rid)->with('replies')->get();
+        $comments = Comments::where('parent_id', $this->post_rid)->with('replies')->orderBy('created_at')->get();
         return view('livewire.show-comments', compact('comments'));
     }
 }

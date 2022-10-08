@@ -28,9 +28,6 @@ class PostsController extends Controller
         $post = Post::whereHas('source', function($q) use ($subreddit) {
             $q->where('name', $subreddit);
         })
-            ->with('comments')
-            ->with('comments.get_author')
-            ->with('comments.replies')
             ->with('media_archive')
             ->where('reddit_id', $rid)
             ->orderBy('id', 'DESC')

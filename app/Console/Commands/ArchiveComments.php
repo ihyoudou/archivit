@@ -93,33 +93,7 @@ class ArchiveComments extends Command
                             ]
                         );
                         if(isset($data->replies->data->children)) {
-                            foreach ($data->replies->data->children as $replies) {
-                                if($replies->kind === "t1"){
-                                    $author = Author::firstOrCreate([
-                                        'name' => $replies->data->author
-                                    ]);
-                                    $comments[] = [
-                                        "rid" => $replies->data->name,
-                                        "parent_id" => $replies->data->parent_id,
-                                        "body" => $replies->data->body,
-                                        "reddit_post_id" => $this->to_archive[$index]->id,
-                                        "author_id" => $author->id,
-                                        "upvotes" => $replies->data->ups,
-                                        "downvotes" => $replies->data->downs,
-                                        "score" => $replies->data->score,
-                                        "created_at" => Carbon::createFromTimestamp($replies->data->created_utc),
-                                    ];
-
-                                    $votes_update = Comments::where("rid", '=', $data->name)->update(
-                                        [
-                                            "upvotes" => $replies->data->ups,
-                                            "downvotes" => $replies->data->downs,
-                                            "score" => $replies->data->score,
-                                            "updated_at" => Carbon::now(),
-                                        ]
-                                    );
-                                }
-                            }
+                            $this->ArchiveReply($data->replies->data->children, $this->to_archive[$index]->id);
                         }
                     }
                 }
@@ -141,6 +115,41 @@ class ArchiveComments extends Command
         return 0;
     }
 
+    public function ArchiveReply($replies_array, $reddit_port_id)
+    {
+        foreach ($replies_array as $replies) {
+
+            if ($replies->kind === "t1") {
+                $this->info(sprintf("Archiving comment %s", $replies->data->name));
+                $author = Author::firstOrCreate([
+                    'name' => $replies->data->author
+                ]);
+                $insert = Comments::insertOrIgnore([
+                    "rid" => $replies->data->name,
+                    "parent_id" => $replies->data->parent_id,
+                    "body" => $replies->data->body,
+                    "reddit_post_id" => $reddit_port_id,
+                    "author_id" => $author->id,
+                    "upvotes" => $replies->data->ups,
+                    "downvotes" => $replies->data->downs,
+                    "score" => $replies->data->score,
+                    "created_at" => Carbon::createFromTimestamp($replies->data->created_utc),
+                ]);
+                $votes_update = Comments::where("rid", '=', $replies->data->name)->update(
+                    [
+                        "upvotes" => $replies->data->ups,
+                        "downvotes" => $replies->data->downs,
+                        "score" => $replies->data->score,
+                        "updated_at" => Carbon::now(),
+                    ]
+                );
+
+                if ($replies->data->replies != "") {
+                    $this->ArchiveReply($replies->data->replies->data->children, $reddit_port_id);
+                }
+            }
+        }
+    }
     /**
      * Counter
      *
