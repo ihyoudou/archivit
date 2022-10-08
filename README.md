@@ -8,10 +8,20 @@ Application to archive subreddits from Reddit with web interface written using L
 - [x] Archive subreddits   
 - [ ] Archive posts with images (partial)  
 - [ ] Archive posts with video  (partial)
-- [ ] Archive comments on posts  
+- [x] Archive comments on posts  
 - [ ] Archive user profiles  
 - [ ] Support local and remote media store (e.g. S3 object storage)  
 - [ ] Usable web interface and admin interface
+
+### Current state
+- Archive posts with images  
+Works with direct image links (and compressing them to webp), Imgur albums are not yet working
+- Archive posts with video  
+Works with reddit video (todo: add compressing), Streamable, gfycat etc services support planned in future
+- Support local and remote media store (e.g. S3 object storage)  
+As media downloaders use Laravel `storage` function, it should work, but it needs testing
+- Usable web interface and admin interface  
+Admin panel exist - there are basic stats and add/remove subreddit options, more to come.
 
 ## Requirements
 
