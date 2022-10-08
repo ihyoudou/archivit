@@ -38,30 +38,10 @@
                 </div>
             </div>
             <h3>Comments ({{ count($post->comments) }})</h3>
-
-            @foreach($post->comments as $comment)
-                <div
-                    class="card"
-                    {{-- checking if comment is a reply to main post --}}
-                    @if($comment->parent_id != "t3_" . $post->reddit_id)
-                        style="width:90%"
-                    @endif
-                >
-                    <div class="card-body">
-                        parent: {{$comment->parent_id}}<br>
-                        ownid: {{$comment->rid}}<br>
-                        <a href="/user/{{$comment->get_author->name}}">{{$comment->get_author->name}}</a>
-                        <x-markdown>
-                            {{$comment->body}}
-                        </x-markdown>
-                        <span><i class="bi bi-caret-up"></i>{{ $post->score }}</span> |
-                        <a href="https://old.reddit.com{{$post->permalink}}{{substr($comment->rid, 3)}}" target="_blank">
-                            {{$comment->created_at}}
-                        </a>
-                    </div>
-                </div>
-            @endforeach
-
+            @php
+                $post_reddit_id = "t3_".$post->reddit_id;
+            @endphp
+            <livewire:show-comments :post_rid="$post_reddit_id">
         @else
             <div class="d-flex justify-content-center">
                 <h2>Post was not found</h2>
