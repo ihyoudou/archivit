@@ -16,6 +16,7 @@ class ArchiveComments extends Command
     private $totalItemsToArchiveCount;
     private $counter = 1;
     private $to_archive;
+    private $replies_db = [];
     /**
      * The name and signature of the console command.
      *
@@ -95,6 +96,9 @@ class ArchiveComments extends Command
                         if(isset($data->replies->data->children)) {
                             $this->ArchiveReply($data->replies->data->children, $this->to_archive[$index]->id);
                         }
+                        // Mass inserting and clearing array
+                        $insert_replies = Comments::insertOrIgnore($this->replies_db);
+                        $this->replies_db = [];
                     }
                 }
                 // Mass insert
@@ -124,7 +128,7 @@ class ArchiveComments extends Command
                 $author = Author::firstOrCreate([
                     'name' => $replies->data->author
                 ]);
-                $insert = Comments::insertOrIgnore([
+                $this->replies_db[] = [
                     "rid" => $replies->data->name,
                     "parent_id" => $replies->data->parent_id,
                     "body" => $replies->data->body,
@@ -134,7 +138,7 @@ class ArchiveComments extends Command
                     "downvotes" => $replies->data->downs,
                     "score" => $replies->data->score,
                     "created_at" => Carbon::createFromTimestamp($replies->data->created_utc),
-                ]);
+                ];
                 $votes_update = Comments::where("rid", '=', $replies->data->name)->update(
                     [
                         "upvotes" => $replies->data->ups,
