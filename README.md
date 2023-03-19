@@ -1,7 +1,8 @@
 # Archivit
 
-Application to archive subreddits from Reddit with web interface written using Laravel. Highly work in progress.
+Application to archive subreddits from Reddit with web interface written using Laravel. ~~Highly work in progress.~~
 
+In a retrospect i'm not really happy with this design where the app parse Reddit JSON output and create database records, it is pretty slow with many comments and resource heavy. Idea for v2 is to keep versioned JSON and just parse it on user visit (instead of making recurring one-to-one relations).
 
 ## Goal
 
@@ -25,7 +26,7 @@ Admin panel exist - there are basic stats and add/remove subreddit options, more
 
 ## Requirements
 
-* PHP 8+
+* PHP 8.1+
 * MySQL/MariaDB Database (but PostgreSQL should also work)
 * Composer
 * Crontab
