@@ -41,18 +41,24 @@ class DownloadImage implements ShouldQueue
      */
     public function handle()
     {
-        $check_if_exist = Media::where('original_source', '=', $this->url)->count();
-        // if media is not yet downloaded
+        // Downloading image
+        $original_file = file_get_contents($this->url);
+        // Generating sha256 hash of image
+        $ctx = hash_init('sha256');
+        hash_update($ctx, $original_file);
+        $hash = hash_final($ctx);
+
+        // Checking if file exist based on url
+        $check_if_exist = Media::where('hash', '=', $hash)->count();
         if($check_if_exist == 0){
             $uuid = Str::uuid();
             $path = sprintf("%s/%s/%s.%s",
-                Carbon::now()->format('Y-m'),
-                $this->post_id,
+                Carbon::now()->format('Y'),
+                Carbon::now()->format('m'),
                 $uuid,
                 pathinfo(basename($this->url), PATHINFO_EXTENSION));
 
-            // downloading image
-            $image = Image::make(file_get_contents($this->url))->encode('webp', 75);
+            $image = Image::make($original_file)->encode('webp', 75);
             Storage::put($path, $image);
 
             $post = Post::where('reddit_id', '=', $this->post_id)->first();
@@ -61,6 +67,7 @@ class DownloadImage implements ShouldQueue
                 "uri" => $path,
                 "original_source" => $this->url,
                 "type" => "image",
+                "hash" => $hash,
             ]);
         }
 

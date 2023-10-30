@@ -13,6 +13,7 @@ class Media extends Model
         'reddit_post_id',
         'uri',
         'original_source',
+        'hash',
     ];
 
     public function from_post()

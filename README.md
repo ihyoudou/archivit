@@ -53,7 +53,8 @@ If you have Docker installed, you can utilize Laravel Sail to quickly boot-up de
 ```
 git clone https://github.com/ihyoudou/archivit
 cd archivit
-composer update
+composer install
+npm install
 cp .env.example .env
 php artisan key:generate
 ./vendor/bin/sail up
